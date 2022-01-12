@@ -26,8 +26,6 @@ how the game works. This slice is randomly generated and is passed to **run_war*
 
 ## TODOs
 
-- Create a function to random func to reasonably generate troops distribution;
-**find_troop_allocation**
-- Scale it using goroutines
+- Turn into a working console app, with the 3 expected parameters
 - Unit testing and refining
 
