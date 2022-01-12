@@ -1,6 +1,7 @@
 package events
 
 import (
+	t "main/tools"
 	"math/rand"
 	"sort"
 	"time"
@@ -129,16 +130,14 @@ func find_troop_allocation(defenders_size int, defenders_might int) []int {
 }
 
 // Simulates a war; repeated battles over a list of defending territories
-func Run_war(attackers_size int, def_size int, def_might int) (bool, int) {
+func Run_war(attackers_size int, def_size int, def_might int) t.Plunder {
 	var is_victory bool
-	var victories int
 	defenders_spread := find_troop_allocation(def_size, def_might)
 	for index, value := range defenders_spread {
 		is_victory, attackers_size = run_battle(attackers_size, value)
 		if !is_victory {
-			return false, index
+			return t.Plunder{Outcome: false, Conquers: index}
 		}
-		victories++
 	}
-	return true, victories
+	return t.Plunder{Outcome: true, Conquers: def_size}
 }
