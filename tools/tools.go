@@ -6,3 +6,12 @@ type Plunder struct {
 	Victories int
 	Conquers  int
 }
+
+// Pasted sum function; lacking in golang standard library
+func Sum(array []int) int {
+	result := 0
+	for _, v := range array {
+		result += v
+	}
+	return result
+}

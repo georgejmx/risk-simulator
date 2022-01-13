@@ -81,15 +81,6 @@ func run_battle(attackers int, defenders int) (bool, int) {
 	return is_victory, remainder
 }
 
-// Pasted sum function; lacking in golang standard library
-func sum(array []int) int {
-	result := 0
-	for _, v := range array {
-		result += v
-	}
-	return result
-}
-
 // Given a defending troops size, creates a realistic but random troop
 // allocation on those territories
 func find_troop_allocation(defenders_size int, defenders_might int) []int {
@@ -110,7 +101,7 @@ func find_troop_allocation(defenders_size int, defenders_might int) []int {
 		troops_dist = append(troops_dist, 2+rand.Intn(
 			(defenders_might-ones_size)/meds_size))
 	}
-	rem = defenders_might - sum(troops_dist)
+	rem = defenders_might - t.Sum(troops_dist)
 	if rem < 1 {
 		rem = 1
 	}

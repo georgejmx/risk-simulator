@@ -26,6 +26,6 @@ how the game works. This slice is randomly generated and is passed to **run_war*
 
 ## TODOs
 
-- Turn into a working console app, with the 3 expected parameters
+- Write up how the code actually works
 - Unit testing and refining
 
