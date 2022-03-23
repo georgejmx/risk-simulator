@@ -22,10 +22,12 @@ The user inputs;
 2. Total number of defending troops
 3. Total number of defending territories
 
-The program results in a probability of success *(as a percentage, which comes 
+The program outputs;
+1. The probability of success *(as a percentage, which comes 
 from 2000 possible simulations)*
+2. The expected number of territories conquered
 
-## Initial Plan for how the code will work
+## Initial Plan for how the code works
 
 - **run_war**; a function that goes through dice rolls in the
 game to simulate an army marching through territories. This is a single
