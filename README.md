@@ -27,7 +27,7 @@ The program outputs;
 from 2000 possible simulations)*
 2. The expected number of territories conquered
 
-## Initial Plan for how the code works
+## How the code works
 
 - **run_war**; a function that goes through dice rolls in the
 game to simulate an army marching through territories. This is a single
