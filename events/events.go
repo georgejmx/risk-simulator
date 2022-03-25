@@ -84,11 +84,20 @@ func run_battle(attackers int, defenders int) (bool, int) {
 // Given a defending troops size, creates a realistic but random troop
 // allocation on those territories
 func find_troop_allocation(defenders_size int, defenders_might int) []int {
+	// Catches when defending troops is tiny which would break main logic
+	if defenders_size < 4 || defenders_might < 5 {
+		return []int{1, 1, 1}
+	}
+
 	// Caluclating the number of each territory group; grouped by army size
 	rand.Seed(time.Now().UnixNano())
-	ones_size := rand.Intn(defenders_size/2 + 1)
+
+	div1 := defenders_size/2 + 1
+	ones_size := rand.Intn(div1)
+
 	rem := defenders_size - ones_size
-	bigs_size := rand.Intn(rem / 3)
+	div2 := rem / 3
+	bigs_size := rand.Intn(div2)
 	meds_size := rem - bigs_size
 
 	// Calculating the number of troops at each territory

@@ -6,10 +6,10 @@ import (
 )
 
 // Collect run_war results into batches of 100, then return the sum as a pointer
-func run_batch(size int) t.Plunder {
+func run_batch(att_size int, def_size int, def_might int, size int) t.Plunder {
 	total_plunder := t.Plunder{}
 	for i := 0; i < size; i++ {
-		result := e.Run_war(300, 12, 100)
+		result := e.Run_war(att_size, def_size, def_might)
 		if result.Outcome {
 			total_plunder.Victories++
 			total_plunder.Conquers += result.Conquers
@@ -19,8 +19,8 @@ func run_batch(size int) t.Plunder {
 }
 
 // Push batches of calls to e.Run_war into a specified channel
-func simulate(ch chan t.Plunder, batch_size int) {
-	ch <- run_batch(batch_size)
+func simulate(ch chan t.Plunder, att_size int, def_size int, def_might int, batch_size int) {
+	ch <- run_batch(att_size, def_size, def_might, batch_size)
 }
 
 // Simulate wars using 4 goroutines each on a separate channel, returning the
@@ -33,10 +33,10 @@ func Run_simulations(
 	ch3 := make(chan t.Plunder)
 	ch4 := make(chan t.Plunder)
 
-	go simulate(ch1, batch_size)
-	go simulate(ch2, batch_size)
-	go simulate(ch3, batch_size)
-	go simulate(ch4, batch_size)
+	go simulate(ch1, att_size, def_size, def_might, batch_size)
+	go simulate(ch2, att_size, def_size, def_might, batch_size)
+	go simulate(ch3, att_size, def_size, def_might, batch_size)
+	go simulate(ch4, att_size, def_size, def_might, batch_size)
 
 	total_plunder := t.Plunder{}
 	for i := 0; i < 4; i++ {
