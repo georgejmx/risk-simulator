@@ -2,6 +2,7 @@ package events
 
 import (
 	t "main/tools"
+	"math"
 	"math/rand"
 	"sort"
 	"time"
@@ -42,11 +43,14 @@ func run_attack(troops [2]int) [2]int {
 	var def_result []int = roll(dice_counts[1])
 	sort.Ints(att_result)
 	sort.Ints(def_result)
+	att_result = t.Reverse_array(att_result)
+	def_result = t.Reverse_array(def_result)
 
 	// For the max number of dice (or troops loosable), deduct troops lost in
 	// battle from each player's total
 	i := 0
-	for i < dice_counts[1] && i < len(att_result) {
+	num_pairs := int(math.Min(float64(dice_counts[0]), float64(dice_counts[1])))
+	for i < num_pairs {
 		if att_result[i] > def_result[i] {
 			troops[1]--
 		} else {
@@ -61,32 +65,23 @@ func run_attack(troops [2]int) [2]int {
 func run_battle(attackers int, defenders int) (bool, int) {
 	// Recursively run attacks
 	troops := [2]int{attackers, defenders}
-	i := 0
 	for {
 		troops = run_attack(troops)
 		// fmt.Printf("Attackers: %v, Defenders: %v\n", troops[0], troops[1])
-		if troops[0] == 1 || troops[1] == 0 {
-			break
+		if troops[0] == 1 {
+			return false, troops[1]
+		} else if troops[1] == 0 {
+			return true, troops[0]
 		}
-		i++
 	}
-
-	// Calculating then return whether a victory, and remaining troops
-	is_victory := true
-	remainder := troops[0]
-	if troops[1] > 0 {
-		is_victory = false
-		remainder = troops[1]
-	}
-	return is_victory, remainder
 }
 
 // Given a defending troops size, creates a realistic but random troop
 // allocation on those territories
 func find_troop_allocation(defenders_size int, defenders_might int) []int {
 	// Catches when defending troops is tiny which would break main logic
-	if defenders_size < 4 || defenders_might < 5 {
-		return []int{1, 1, 1}
+	if defenders_size < 5 || defenders_might < 6 {
+		return []int{1, 1, 1, 1}
 	}
 
 	// Caluclating the number of each territory group; grouped by army size
