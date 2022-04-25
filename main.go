@@ -7,7 +7,7 @@ import (
 
 // Program entry point
 func main() {
-	BATCH_SIZE := 250
+	BATCH_SIZE := 2500
 
 	fmt.Printf("--------------\nRISK SIMULATOR\n--------------\n\nby georgejmx")
 	fmt.Printf("\n\nA tool to work out whether your army will win a given war ")

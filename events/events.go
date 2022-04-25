@@ -68,7 +68,6 @@ func run_battle(attackers, defenders int) (bool, int) {
 	troops := [2]int{attackers, defenders}
 	for {
 		troops = run_attack(troops)
-		// fmt.Printf("Attackers: %v, Defenders: %v\n", troops[0], troops[1])
 		if troops[0] == 1 {
 			return false, troops[1]
 		} else if troops[1] == 0 {
@@ -107,8 +106,10 @@ func Run_war(attackers_size int, def_size int, def_might int) t.Plunder {
 	defenders_spread, _ := find_troop_allocation(def_size, def_might)
 	for index, value := range defenders_spread {
 		is_victory, attackers_size = run_battle(attackers_size, value)
-		if !is_victory || attackers_size == 1 {
+		if !is_victory {
 			return t.Plunder{Outcome: false, Conquers: index}
+		} else if attackers_size == 1 {
+			return t.Plunder{Outcome: false, Conquers: index + 1}
 		}
 	}
 	return t.Plunder{Outcome: true, Conquers: def_size}
