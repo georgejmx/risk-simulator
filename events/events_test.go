@@ -1,6 +1,8 @@
 package events
 
 import (
+	"fmt"
+	u "main/tools"
 	"testing"
 )
 
@@ -80,7 +82,7 @@ func Test_find_dices(t *testing.T) {
 /* Checks that battles produce appropriate success results */
 func Test_run_battle_success(t *testing.T) {
 	pass := 0
-	for pass < 100 {
+	for pass < 1000 {
 		is_victory, remainder := run_battle(20, 4)
 		if !is_victory {
 			t.Logf("unexpected defeat; remainder of %v at pass %v\n",
@@ -94,14 +96,31 @@ func Test_run_battle_success(t *testing.T) {
 /* Checks that battles produce appropriate failure results */
 func Test_run_battle_failure(t *testing.T) {
 	pass := 0
-	for pass < 100 {
-		is_victory, remainder := run_battle(18, 38)
+	for pass < 1000 {
+		is_victory, remainder := run_battle(18, 42)
 		if is_victory {
 			t.Logf("unexpected victory; remainder of %v at pass %v\n",
 				remainder, pass+1)
 			t.Fatal()
 		}
 		pass++
+	}
+}
+
+/* Testing troop allocation is always valid */
+func Test_find_troop_allocation(t *testing.T) {
+	params := [5][2]int{{4, 9}, {3, 4}, {1, 1}, {10, 30}, {6, 8}}
+	num := 0
+	for num < 5 {
+		allocation, _ := find_troop_allocation(params[num][0], params[num][1])
+
+		// Testing total allocation size always equals total defending troops
+		if u.Sum(allocation) != params[num][1] {
+			t.Logf("incorrect total number of troops. expected: %v, got %v\n",
+				params[num][1], u.Sum(allocation))
+			t.Fail()
+		}
+		num++
 	}
 }
 
@@ -113,32 +132,26 @@ func Test_Run_war_success(t *testing.T) {
 
 		// Checking that the outcome of this attack was not a defeat
 		if plunder.Outcome == false {
-			t.Log("unexpected failure outcome of war")
+			t.Logf("unexpected failure outcome of war at pass %v\n", pass)
 			t.Fail()
 		}
-
-		// Checking that atleast 3 territories were conquered
-		if plunder.Conquers < 3 {
-			t.Log("unexpectely few territories conquered")
-			t.Fail()
-		}
-
 		pass++
+		fmt.Printf("\n")
 	}
 }
 
 /* Checking that run war correctly produces a successfull outcome */
 func Test_Run_war_failure(t *testing.T) {
 	pass := 0
-	for pass < 20 {
-		plunder := Run_war(20, 8, 30)
+	for pass < 200 {
+		plunder := Run_war(20, 8, 60)
 
 		// Checking that the outcome of this attack was not a defeat
 		if plunder.Outcome == true {
 			t.Logf("unexpected success outcome of war at pass %v\n", pass)
 			t.Fail()
 		}
-
+		fmt.Printf("\nPASS %v\n", pass)
 		pass++
 	}
 }

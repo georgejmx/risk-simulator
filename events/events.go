@@ -1,6 +1,7 @@
 package events
 
 import (
+	"errors"
 	t "main/tools"
 	"math"
 	"math/rand"
@@ -21,7 +22,7 @@ func roll(n int) []int {
 }
 
 // Finds the number of dice needed for each player depending on troops
-func find_dices(attackers int, defenders int) [2]int {
+func find_dices(attackers, defenders int) [2]int {
 	dice_nums := [2]int{1, 1}
 	if attackers > 3 {
 		dice_nums[0] = 3
@@ -62,7 +63,7 @@ func run_attack(troops [2]int) [2]int {
 }
 
 // Simulates a battle; when one territory invades another
-func run_battle(attackers int, defenders int) (bool, int) {
+func run_battle(attackers, defenders int) (bool, int) {
 	// Recursively run attacks
 	troops := [2]int{attackers, defenders}
 	for {
@@ -78,59 +79,35 @@ func run_battle(attackers int, defenders int) (bool, int) {
 
 // Given a defending troops size, creates a realistic but random troop
 // allocation on those territories
-func find_troop_allocation(defenders_size int, defenders_might int) []int {
-	// Catches when defending troops is tiny which would break main logic
-	if defenders_size < 5 || defenders_might < 6 {
-		return []int{1, 1, 1, 1}
+func find_troop_allocation(num_territories, num_armies int) ([]int, error) {
+	if num_territories > num_armies {
+		return nil, errors.New(
+			"invalid arguments; will always be more armies than territories")
 	}
 
-	// Caluclating the number of each territory group; grouped by army size
+	// starting allocation with 1 army in each territory
+	allocation := make([]int, num_territories)
+	for i := 0; i < num_territories; i++ {
+		allocation[i] = 1
+	}
+
+	allocated := num_territories
 	rand.Seed(time.Now().UnixNano())
-
-	div1 := defenders_size/2 + 1
-	ones_size := rand.Intn(div1)
-
-	rem := defenders_size - ones_size
-	div2 := rem / 3
-	bigs_size := rand.Intn(div2)
-	meds_size := rem - bigs_size
-
-	// Calculating the number of troops at each territory
-	rand.Seed(time.Now().UnixNano())
-	troops_dist := []int{}
-	for i := 0; i < ones_size; i++ {
-		troops_dist = append(troops_dist, 1)
+	for allocated < num_armies {
+		al := rand.Intn(num_territories)
+		allocation[al]++
+		allocated++
 	}
-	for i := 0; i < meds_size; i++ {
-		troops_dist = append(troops_dist, 2+rand.Intn(
-			(defenders_might-ones_size)/meds_size))
-	}
-	rem = defenders_might - t.Sum(troops_dist)
-	if rem < 1 {
-		rem = 1
-	}
-
-	// Lastly, find the troop allocation for the big territories. TODO: improve
-	rand.Seed(time.Now().UnixNano())
-	for i := 0; i < bigs_size; i++ {
-		troops_dist = append(troops_dist, rem/bigs_size)
-	}
-
-	// Shuffle then return array
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(troops_dist), func(i int, j int) {
-		troops_dist[i], troops_dist[j] = troops_dist[j], troops_dist[i]
-	})
-	return troops_dist
+	return allocation, nil
 }
 
 // Simulates a war; repeated battles over a list of defending territories
 func Run_war(attackers_size int, def_size int, def_might int) t.Plunder {
 	var is_victory bool
-	defenders_spread := find_troop_allocation(def_size, def_might)
+	defenders_spread, _ := find_troop_allocation(def_size, def_might)
 	for index, value := range defenders_spread {
 		is_victory, attackers_size = run_battle(attackers_size, value)
-		if !is_victory {
+		if !is_victory || attackers_size == 1 {
 			return t.Plunder{Outcome: false, Conquers: index}
 		}
 	}
