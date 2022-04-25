@@ -18,12 +18,12 @@ func main() {
 	var att_size int
 	var def_size int
 	var def_might int
-	fmt.Printf("Attacking army size: ")
-	fmt.Scanf("%d", &att_size)
-	fmt.Printf("Total defending territories: ")
-	fmt.Scanf("%d", &def_size)
-	fmt.Printf("Total defending troops: ")
-	fmt.Scanf("%d\n", &def_might)
+	fmt.Print("Attacking army size: \n")
+	fmt.Scanln(&att_size)
+	fmt.Print("Total defending territories: \n")
+	fmt.Scanln(&def_size)
+	fmt.Print("Total defending troops: \n")
+	fmt.Scanln(&def_might)
 
 	// Running simulations based on input
 	fmt.Printf("\nRunning simulations...")
