@@ -9,11 +9,8 @@ given army, receiving their card bonus
 
 ## Usage
 
-Clone the repo using git
-
-- In linux, navigate to */bin* , then execute *./rs-amd64* to launch the
-prebuilt binary
-- In Windows, do the same but for *./rs-windows*
+- Clone the repo using git
+- Execute `go run main.go` in the root directory
 
 ## Program input and output
 
@@ -23,8 +20,8 @@ The user inputs;
 3. Total number of defending territories
 
 The program outputs;
-1. The probability of success *(as a percentage, which comes 
-from 2000 possible simulations)*
+1. The probability of success as a percentage, which comes 
+from 1000 possible simulations. *Excuse the slow running time*
 2. The expected number of territories conquered
 
 ## How the code works
@@ -32,8 +29,20 @@ from 2000 possible simulations)*
 - **run_war**; a function that goes through dice rolls in the
 game to simulate an army marching through territories. This is a single
 simulation
-- Goroutines are used to crunch through 10,000 simulations of **run_war**,
+- Goroutines are used to crunch through 10,000 simulations of the war,
 recording the results
-- User inputs generate a slice of type *Territory* to properly represent
-how the game works. This slice is randomly generated and is passed to **run_war** 
+- Logic matches random dice rolls and territory allocation to a war result,
+using the board game rules
+    - **Attack:** A single dice roll, represented by *events.run_war*
+    - **Battle:** A group of exhaustive attacks on a territory, represented by 
+    *events.run_battle*
+    - **War:** Successive battles, where the attacking army successively
+    battles all defending territories until there is an outcome, represented 
+    by *events.run_War*
+
+# TODO
+
+- Possibly give the user an option of *tall* or *flat* defending troop
+distribution
+- Look over and optimise goroutine logic
 
